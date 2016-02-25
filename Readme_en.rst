@@ -26,11 +26,11 @@ Cloudbus external API usage examples (Baseride)
 First example -- python/api2_test.py -- is Cloudbus API call from Python via HTTP.
 
 It queries information about user which credentials are used for the call.
-Also, data for the Demo Cloudbus enterprize vehicle query is requested
+Also, data for the "Demo Cloudbus" enterprise vehicle query is requested
 
 Second example -- python/socket_test.py -- is Python realtime websocket event subscriprion.
 
-Script subscribes for Demo Cloudbus enterprize events which are triggered when vehicles of the enterprize enter its geozones.
+Script subscribes for "Demo Cloudbus" events which are triggered when enterprise vehicles enter its geozones.
 Script uses Twisted framework for demo purposes.
 
 All server data comes in JSON format.
@@ -38,4 +38,4 @@ All server data comes in JSON format.
 csharp/api2_test example is C# external API Cloudbus через HTTP call.
 
 It queries information about user which credentials are used for the call.
-Also, data for the Demo Cloudbus enterprize vehicle query is requested
+Also, data for the Demo Cloudbus enterprise vehicle query is requested
