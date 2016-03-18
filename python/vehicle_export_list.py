@@ -26,7 +26,7 @@ try:
                 i += 1
                 f.write("{},{},{}\n".format(i,obj['registration_code'],obj['park_info']['enterprise_info']['name']) )
         offset = offset + limit
-        next = json_data['meta']['next']
+        next_url = json_data['meta']['next']
     f.close()
 
 except BaseException, ex:
