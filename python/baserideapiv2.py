@@ -69,12 +69,14 @@ class BaserideApi:
         return self.domain + url + str(object_id) + '/?format=json&access_token=' + self.access_token
 
     def get_object_data(self, url, object_id):
-        resp = requests.get(self.get_object_url(url, object_id))
+        json_data = self.get_data_from_request(self.get_object_url(url, object_id))
+        return json_data
 
+    def get_data_from_request(url):
+        resp = requests.get(url)
         if resp.status_code!=200:
             print 'ERR code '+str(resp.status_code)
             return None
-           
         json_data = json.loads(resp.text)
         return json_data
 
@@ -88,6 +90,11 @@ class BaserideVehicleApi(BaserideApi):
 
     def set_base_url(self):
         self.base_url = 'api/v2/transport/vehicle/'
+
+    def get_gps_data(self, from, to, object_id):
+        url = self.domain + self.base_url + "{}/rawgpsdata/position/?format=json&from={}&to={}&access_token={}".format(object_id,from,to)
+        data = self.get_data_from_request(url)
+        return data
 
 class BaserideServletServletApi(BaserideApi):
 
