@@ -20,6 +20,7 @@ class BaserideApi:
         self.password = password
         self.client_id = client_id
         self.client_secret = client_secret
+        self.access_token = ""
         self.set_base_url()
 
     def get_base_url(self):
@@ -27,6 +28,9 @@ class BaserideApi:
 
     def set_base_url(self):
         self.base_url = ""
+
+    def set_token(self, access_token):
+        self.access_token = access_token
     
     def get_token(self):
 
@@ -69,14 +73,22 @@ class BaserideApi:
         return self.domain + url + str(object_id) + '/?format=json&access_token=' + self.access_token
 
     def get_object_data(self, url, object_id):
-        json_data = self.get_data_from_request(self.get_object_url(url, object_id))
-        return json_data
+        resp = requests.get(self.get_object_url(url, object_id))
 
-    def get_data_from_request(url):
-        resp = requests.get(url)
         if resp.status_code!=200:
             print 'ERR code '+str(resp.status_code)
             return None
+           
+        json_data = json.loads(resp.text)
+        return json_data
+
+    def get_data_by_url(self, url):
+        resp = requests.get(url)
+
+        if resp.status_code!=200:
+            print 'ERR code '+str(resp.status_code)
+            return None
+
         json_data = json.loads(resp.text)
         return json_data
 
@@ -86,17 +98,55 @@ class BaserideApi:
         r = requests.patch(url=object_url, data=body, headers={'Content-Type': "application/json"})
         print r.status_code        
 
+    def check_if_exist(self, params):
+        purl = ""
+        for i in params:
+            purl += "&" + i + "=" + params[i]
+        url = self.domain + self.base_url + '?format=json&access_token=' + self.access_token + '&offset=0&limit=1' + purl
+        #print url
+        d = self.get_data_by_url(url)
+        return d["objects"]
+
+    def create_object(self, params):
+        url = self.domain + self.base_url + '?format=json&access_token=' + self.access_token
+        #print url, params
+        headers = {'Content-type': 'application/json'}
+        r = requests.post(url, data = json.dumps(params), headers = headers)
+        json_data = json.loads(r.text)
+        return json_data
+
+#        if r.status_code!=200:
+#            print 'ERR code '+str(r.status_code)
+#            print r.text
+#            return None
+           
+
+#        json_data = json.loads(r.text)
+#        return json_data
+
 class BaserideVehicleApi(BaserideApi):
 
     def set_base_url(self):
         self.base_url = 'api/v2/transport/vehicle/'
 
-    def get_gps_data(self, from, to, object_id):
-        url = self.domain + self.base_url + "{}/rawgpsdata/position/?format=json&from={}&to={}&access_token={}".format(object_id,from,to)
-        data = self.get_data_from_request(url)
-        return data
-
 class BaserideServletServletApi(BaserideApi):
 
     def set_base_url(self):
         self.base_url = 'api/v2/servlet/servlet/'
+
+
+class BaserideRoutePointApi(BaserideApi):
+
+    def set_base_url(self):
+        self.base_url = 'api/v2/logistics/route_point/'
+
+class BaserideTaskApi(BaserideApi):
+
+    def set_base_url(self):
+        self.base_url = 'api/v2/logistics/task/'
+
+class BaserideUserProfileApi(BaserideApi):
+
+    def set_base_url(self):
+        self.base_url = 'api/v2/profile/userprofile/'
+
